@@ -2,15 +2,10 @@ import React, { useState, useEffect } from "react";
 import { configureGroqKeyApi, getGroqStatusApi } from "../api/client";
 import { Key, CheckCircle2, AlertCircle, X, Sparkles } from "lucide-react";
 
-interface GroqModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export const GroqModal: React.FC<GroqModalProps> = ({ isOpen, onClose }) => {
+export const GroqModal = ({ isOpen, onClose }) => {
   const [apiKey, setApiKey] = useState("");
   const [loading, setLoading] = useState(false);
-  const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [statusMsg, setStatusMsg] = useState(null);
   const [isConfigured, setIsConfigured] = useState(false);
 
   useEffect(() => {
@@ -19,7 +14,7 @@ export const GroqModal: React.FC<GroqModalProps> = ({ isOpen, onClose }) => {
     });
   }, []);
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     if (!apiKey.trim()) return;
 
@@ -33,7 +28,7 @@ export const GroqModal: React.FC<GroqModalProps> = ({ isOpen, onClose }) => {
       setTimeout(() => {
         onClose();
       }, 1500);
-    } catch (err: any) {
+    } catch (err) {
       setStatusMsg({ type: "error", text: err.message || "Failed to validate key" });
     } finally {
       setLoading(false);

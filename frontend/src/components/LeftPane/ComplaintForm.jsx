@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "../../store";
 import {
   updateField,
   resetComplaintForm,
@@ -21,7 +20,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-export const ComplaintForm: React.FC = () => {
+export const ComplaintForm = () => {
   const dispatch = useDispatch();
   const {
     fields,
@@ -33,18 +32,16 @@ export const ComplaintForm: React.FC = () => {
     isExtracted,
     isSaving,
     saveSuccessMessage,
-  } = useSelector((state: RootState) => state.complaint);
+  } = useSelector((state) => state.complaint);
 
-  const [activeTab, setActiveTab] = useState<"form" | "ai_insights">("form");
+  const [activeTab, setActiveTab] = useState("form");
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    dispatch(updateField({ field: name as any, value }));
+    dispatch(updateField({ field: name, value }));
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     dispatch(setSaving(true));
     try {
@@ -55,7 +52,7 @@ export const ComplaintForm: React.FC = () => {
       setTimeout(() => {
         dispatch(setSaveSuccessMessage(null));
       }, 4000);
-    } catch (err: any) {
+    } catch (err) {
       alert("Error saving complaint: " + err.message);
     } finally {
       dispatch(setSaving(false));
@@ -68,7 +65,7 @@ export const ComplaintForm: React.FC = () => {
     }
   };
 
-  const renderConfidenceBadge = (fieldName: string) => {
+  const renderConfidenceBadge = (fieldName) => {
     const score = confidenceScores[fieldName];
     if (score === undefined || score === null) return null;
 
@@ -436,7 +433,7 @@ export const ComplaintForm: React.FC = () => {
                   {renderConfidenceBadge("severity")}
                 </div>
                 <div className="severity-radio-group">
-                  {(["Critical", "Major", "Minor"] as const).map((sev) => (
+                  {["Critical", "Major", "Minor"].map((sev) => (
                     <label
                       key={sev}
                       className={`severity-radio-btn ${fields.severity === sev ? `selected-${sev.toLowerCase()}` : ""}`}
@@ -460,7 +457,7 @@ export const ComplaintForm: React.FC = () => {
                   {renderConfidenceBadge("priority")}
                 </div>
                 <div className="priority-radio-group">
-                  {(["High", "Medium", "Low"] as const).map((prio) => (
+                  {["High", "Medium", "Low"].map((prio) => (
                     <label
                       key={prio}
                       className={`priority-radio-btn ${fields.priority === prio ? `selected-${prio.toLowerCase()}` : ""}`}

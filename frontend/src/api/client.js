@@ -10,11 +10,7 @@ export async function createComplaintDraft() {
   return res.json();
 }
 
-export async function extractComplaintApi(
-  complaintId: string,
-  file?: File | null,
-  pastedText?: string
-) {
+export async function extractComplaintApi(complaintId, file, pastedText) {
   const formData = new FormData();
   if (file) {
     formData.append("file", file);
@@ -35,7 +31,7 @@ export async function extractComplaintApi(
   return res.json();
 }
 
-export async function saveComplaintApi(complaintId: string, payload: any) {
+export async function saveComplaintApi(complaintId, payload) {
   const res = await fetch(`${API_BASE}/complaints/${complaintId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -45,7 +41,7 @@ export async function saveComplaintApi(complaintId: string, payload: any) {
   return res.json();
 }
 
-export async function sendChatApi(complaintId: string, message: string) {
+export async function sendChatApi(complaintId, message) {
   const res = await fetch(`${API_BASE}/complaints/${complaintId}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -55,7 +51,7 @@ export async function sendChatApi(complaintId: string, message: string) {
   return res.json();
 }
 
-export async function fetchComplaintsApi(status?: string, severity?: string) {
+export async function fetchComplaintsApi(status, severity) {
   const params = new URLSearchParams();
   if (status && status !== "all") params.append("status", status);
   if (severity && severity !== "all") params.append("severity", severity);
@@ -66,7 +62,7 @@ export async function fetchComplaintsApi(status?: string, severity?: string) {
   return res.json();
 }
 
-export async function configureGroqKeyApi(apiKey: string) {
+export async function configureGroqKeyApi(apiKey) {
   const res = await fetch(`${API_BASE}/api/groq-key`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

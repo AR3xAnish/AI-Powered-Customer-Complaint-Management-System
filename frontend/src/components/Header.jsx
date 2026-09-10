@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "../store";
 import { toggleDrawer } from "../store/slices/triageSlice";
 import { ShieldAlert, Key, FolderArchive, Cpu } from "lucide-react";
 import GroqModal from "./GroqModal";
 
-export const Header: React.FC = () => {
+export const Header = () => {
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
-  const { complaintsList } = useSelector((state: RootState) => state.triage);
+  const { complaintsList } = useSelector((state) => state.triage);
 
   return (
     <>
@@ -63,3 +62,5 @@ export const Header: React.FC = () => {
     </>
   );
 };
+
+export default Header;

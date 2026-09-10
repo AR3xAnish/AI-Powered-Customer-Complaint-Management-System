@@ -7,11 +7,10 @@ import { TriageDrawer } from "./components/TriageQueue/TriageDrawer";
 import { setComplaintsList } from "./store/slices/triageSlice";
 import { fetchComplaintsApi } from "./api/client";
 
-export const App: React.FC = () => {
+export const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Initial fetch of triage queue
     fetchComplaintsApi()
       .then((data) => {
         dispatch(setComplaintsList(data));

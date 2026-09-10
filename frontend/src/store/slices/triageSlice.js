@@ -1,16 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import type { ComplaintFields } from "./complaintSlice";
 
-export interface TriageState {
-  complaintsList: ComplaintFields[];
-  isLoading: boolean;
-  drawerOpen: boolean;
-  statusFilter: string;
-  severityFilter: string;
-}
-
-const initialState: TriageState = {
+const initialState = {
   complaintsList: [],
   isLoading: false,
   drawerOpen: false,
@@ -22,22 +12,22 @@ export const triageSlice = createSlice({
   name: "triage",
   initialState,
   reducers: {
-    setComplaintsList: (state, action: PayloadAction<ComplaintFields[]>) => {
+    setComplaintsList: (state, action) => {
       state.complaintsList = action.payload;
     },
-    setLoadingComplaints: (state, action: PayloadAction<boolean>) => {
+    setLoadingComplaints: (state, action) => {
       state.isLoading = action.payload;
     },
     toggleDrawer: (state) => {
       state.drawerOpen = !state.drawerOpen;
     },
-    setDrawerOpen: (state, action: PayloadAction<boolean>) => {
+    setDrawerOpen: (state, action) => {
       state.drawerOpen = action.payload;
     },
-    setStatusFilter: (state, action: PayloadAction<string>) => {
+    setStatusFilter: (state, action) => {
       state.statusFilter = action.payload;
     },
-    setSeverityFilter: (state, action: PayloadAction<string>) => {
+    setSeverityFilter: (state, action) => {
       state.severityFilter = action.payload;
     },
   },

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "../../store";
 import {
   setComplaintsList,
   setLoadingComplaints,
@@ -17,7 +16,7 @@ import {
   FolderArchive,
 } from "lucide-react";
 
-export const TriageDrawer: React.FC = () => {
+export const TriageDrawer = () => {
   const dispatch = useDispatch();
   const {
     complaintsList,
@@ -25,7 +24,7 @@ export const TriageDrawer: React.FC = () => {
     drawerOpen,
     statusFilter,
     severityFilter,
-  } = useSelector((state: RootState) => state.triage);
+  } = useSelector((state) => state.triage);
 
   const loadData = async () => {
     dispatch(setLoadingComplaints(true));
@@ -45,7 +44,7 @@ export const TriageDrawer: React.FC = () => {
     }
   }, [drawerOpen, statusFilter, severityFilter]);
 
-  const handleSelectComplaint = (cmp: any) => {
+  const handleSelectComplaint = (cmp) => {
     dispatch(
       loadExistingComplaint({
         complaint: {
@@ -73,7 +72,6 @@ export const TriageDrawer: React.FC = () => {
       })
     );
 
-    // Update chat context
     dispatch(clearChat());
     dispatch(
       addMessage({

@@ -1,74 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-
-export interface ComplaintFields {
-  id: string;
-  complaint_source: string;
-  customer_name: string;
-  customer_contact: string;
-  product_name: string;
-  product_strength: string;
-  batch_lot_number: string;
-  manufacturing_date: string;
-  expiry_date: string;
-  quantity_affected: string;
-  complaint_type: string;
-  complaint_date: string;
-  description: string;
-  severity: "Critical" | "Major" | "Minor" | string;
-  priority: "High" | "Medium" | "Low" | string;
-  status: "pending_triage" | "in_review" | "closed" | string;
-}
-
-export interface CompletenessReport {
-  score: number;
-  status: string;
-  missing_fields: string[];
-  recommendations: string[];
-}
-
-export interface DuplicateAlert {
-  is_duplicate: boolean;
-  match_count: number;
-  matched_complaint_ids: string[];
-  similarity_score: number;
-  details: string;
-}
-
-export interface RootCauseRecommendation {
-  category: string;
-  sub_category?: string;
-  confidence?: number;
-  rationale: string;
-  suggested_investigation_steps?: string[];
-}
-
-export interface CAPARecommendation {
-  corrective_actions: string[];
-  preventive_actions: string[];
-  timeline_days: number;
-  regulatory_impact?: string;
-}
-
-export interface ComplaintState {
-  fields: ComplaintFields;
-  confidenceScores: Record<string, number>;
-  completenessReport: CompletenessReport | null;
-  duplicateFlag: DuplicateAlert | null;
-  rootCauseRecommendation: RootCauseRecommendation | null;
-  capaRecommendation: CAPARecommendation | null;
-  extractionStatus: "idle" | "extracting" | "completed" | "error";
-  extractionProgress: number;
-  extractionStatusText: string;
-  modelUsed: string;
-  isExtracted: boolean;
-  isSaving: boolean;
-  saveSuccessMessage: string | null;
-}
 
 const generateId = () => "cmp-" + Math.random().toString(36).substring(2, 9);
 
-const initialFields: ComplaintFields = {
+const initialFields = {
   id: generateId(),
   complaint_source: "",
   customer_name: "",
@@ -87,7 +21,7 @@ const initialFields: ComplaintFields = {
   status: "pending_triage",
 };
 
-const initialState: ComplaintState = {
+const initialState = {
   fields: initialFields,
   confidenceScores: {},
   completenessReport: null,
@@ -107,15 +41,12 @@ export const complaintSlice = createSlice({
   name: "complaint",
   initialState,
   reducers: {
-    updateField: (
-      state,
-      action: PayloadAction<{ field: keyof ComplaintFields; value: string }>
-    ) => {
+    updateField: (state, action) => {
       const { field, value } = action.payload;
       state.fields[field] = value;
       state.confidenceScores[field] = 1.0;
     },
-    setAllFields: (state, action: PayloadAction<Partial<ComplaintFields>>) => {
+    setAllFields: (state, action) => {
       state.fields = { ...state.fields, ...action.payload };
     },
     startExtraction: (state) => {
@@ -123,25 +54,11 @@ export const complaintSlice = createSlice({
       state.extractionProgress = 15;
       state.extractionStatusText = "Ingesting and parsing document...";
     },
-    updateExtractionProgress: (
-      state,
-      action: PayloadAction<{ progress: number; statusText: string }>
-    ) => {
+    updateExtractionProgress: (state, action) => {
       state.extractionProgress = action.payload.progress;
       state.extractionStatusText = action.payload.statusText;
     },
-    extractionSuccess: (
-      state,
-      action: PayloadAction<{
-        extractedFields: Partial<ComplaintFields>;
-        confidenceScores: Record<string, number>;
-        completenessReport: CompletenessReport;
-        duplicateFlag: DuplicateAlert;
-        rootCauseRecommendation: RootCauseRecommendation;
-        capaRecommendation: CAPARecommendation;
-        modelUsed: string;
-      }>
-    ) => {
+    extractionSuccess: (state, action) => {
       const {
         extractedFields,
         confidenceScores,
@@ -168,7 +85,7 @@ export const complaintSlice = createSlice({
       state.extractionStatusText = "AI Extraction & Intelligence Analysis Complete";
       state.isExtracted = true;
     },
-    extractionFailed: (state, action: PayloadAction<string>) => {
+    extractionFailed: (state, action) => {
       state.extractionStatus = "error";
       state.extractionProgress = 0;
       state.extractionStatusText = action.payload;
@@ -186,16 +103,7 @@ export const complaintSlice = createSlice({
       state.isExtracted = false;
       state.saveSuccessMessage = null;
     },
-    loadExistingComplaint: (
-      state,
-      action: PayloadAction<{
-        complaint: ComplaintFields;
-        completenessReport?: CompletenessReport;
-        duplicateFlag?: DuplicateAlert;
-        rootCauseRecommendation?: RootCauseRecommendation;
-        capaRecommendation?: CAPARecommendation;
-      }>
-    ) => {
+    loadExistingComplaint: (state, action) => {
       state.fields = action.payload.complaint;
       state.completenessReport = action.payload.completenessReport || null;
       state.duplicateFlag = action.payload.duplicateFlag || null;
@@ -207,10 +115,10 @@ export const complaintSlice = createSlice({
       state.extractionProgress = 100;
       state.extractionStatusText = "Loaded from Triage Queue";
     },
-    setSaving: (state, action: PayloadAction<boolean>) => {
+    setSaving: (state, action) => {
       state.isSaving = action.payload;
     },
-    setSaveSuccessMessage: (state, action: PayloadAction<string | null>) => {
+    setSaveSuccessMessage: (state, action) => {
       state.saveSuccessMessage = action.payload;
     },
   },

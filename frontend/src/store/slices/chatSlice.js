@@ -1,21 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
 
-export interface ChatMessageItem {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  timestamp: string;
-  suggestedUpdates?: Record<string, any>;
-}
-
-export interface ChatState {
-  messages: ChatMessageItem[];
-  isSending: boolean;
-  error: string | null;
-}
-
-const initialState: ChatState = {
+const initialState = {
   messages: [
     {
       id: "init-msg",
@@ -33,20 +18,20 @@ export const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    addMessage: (state, action: PayloadAction<ChatMessageItem>) => {
+    addMessage: (state, action) => {
       state.messages.push(action.payload);
     },
-    setSending: (state, action: PayloadAction<boolean>) => {
+    setSending: (state, action) => {
       state.isSending = action.payload;
     },
-    setChatError: (state, action: PayloadAction<string | null>) => {
+    setChatError: (state, action) => {
       state.error = action.payload;
     },
     clearChat: (state) => {
       state.messages = [initialState.messages[0]];
       state.error = null;
     },
-    loadChatHistory: (state, action: PayloadAction<ChatMessageItem[]>) => {
+    loadChatHistory: (state, action) => {
       if (action.payload.length > 0) {
         state.messages = action.payload;
       }

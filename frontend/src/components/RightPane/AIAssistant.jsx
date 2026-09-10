@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "../../store";
 import {
   startExtraction,
   updateExtractionProgress,
@@ -24,7 +23,6 @@ import {
   Zap,
 } from "lucide-react";
 
-// Realistic Pharma Complaint Presets for instant demo
 const DEMO_PRESETS = [
   {
     title: "Cracked Vials & Precipitate",
@@ -104,37 +102,37 @@ During receiving audit, warehouse QA noticed a discrepancy between the outer sec
   },
 ];
 
-export const AIAssistant: React.FC = () => {
+export const AIAssistant = () => {
   const dispatch = useDispatch();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const chatBottomRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef(null);
+  const chatBottomRef = useRef(null);
 
   const {
     fields,
     extractionStatus,
     extractionProgress,
     extractionStatusText,
-  } = useSelector((state: RootState) => state.complaint);
+  } = useSelector((state) => state.complaint);
 
-  const { messages, isSending } = useSelector((state: RootState) => state.chat);
+  const { messages, isSending } = useSelector((state) => state.chat);
 
-  const [inputMode, setInputMode] = useState<"upload" | "paste">("paste");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [inputMode, setInputMode] = useState("paste");
+  const [selectedFile, setSelectedFile] = useState(null);
   const [pastedText, setPastedText] = useState(DEMO_PRESETS[0].text);
   const [isDragOver, setIsDragOver] = useState(false);
   const [chatInput, setChatInput] = useState("");
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragOver(true);
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = (e) => {
     e.preventDefault();
     setIsDragOver(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     setIsDragOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
@@ -148,7 +146,7 @@ export const AIAssistant: React.FC = () => {
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       if (file.size > 10 * 1024 * 1024) {
@@ -232,18 +230,18 @@ export const AIAssistant: React.FC = () => {
           }),
         })
       );
-    } catch (err: any) {
+    } catch (err) {
       dispatch(extractionFailed(err.message || "Extraction failed"));
     }
   };
 
-  const handleSendChat = async (messageToSend?: string) => {
+  const handleSendChat = async (messageToSend) => {
     const text = (messageToSend || chatInput).trim();
     if (!text || isSending) return;
 
     const userMsg = {
       id: "user-" + Date.now(),
-      role: "user" as const,
+      role: "user",
       content: text,
       timestamp: new Date().toLocaleTimeString([], {
         hour: "2-digit",
@@ -271,14 +269,14 @@ export const AIAssistant: React.FC = () => {
 
       if (res.suggested_field_updates) {
         Object.entries(res.suggested_field_updates).forEach(([key, val]) => {
-          dispatch(updateField({ field: key as any, value: String(val) }));
+          dispatch(updateField({ field: key, value: String(val) }));
         });
       }
 
       setTimeout(() => {
         chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
-    } catch (err: any) {
+    } catch (err) {
       dispatch(
         addMessage({
           id: "err-" + Date.now(),
