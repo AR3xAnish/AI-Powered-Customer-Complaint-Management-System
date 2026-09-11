@@ -51,7 +51,7 @@ def call_groq_chat(
     temperature: float = 0.1,
     api_key: Optional[str] = None,
 ) -> str:
-    """Invokes Groq API with fallback."""
+    """Invokes Groq API with automatic resilient fallback across active Groq models."""
     client = get_groq_client(api_key)
     if not client:
         raise ValueError("GROQ_API_KEY_NOT_CONFIGURED")
@@ -61,13 +61,30 @@ def call_groq_chat(
         messages.append({"role": "system", "content": system_prompt})
     messages.append({"role": "user", "content": prompt})
 
-    response = client.chat.completions.create(
-        model=model,
-        messages=messages,
-        temperature=temperature,
-        max_tokens=4096,
-    )
-    return response.choices[0].message.content
+    models_to_try = [model]
+    if "70b" in model or "reasoning" in model or "llama" in model:
+        models_to_try.extend(["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b"])
+    else:
+        models_to_try.extend(["openai/gpt-oss-20b", "qwen/qwen3.8-27b", "openai/gpt-oss-120b"])
+
+    last_err = None
+    for candidate_model in models_to_try:
+        try:
+            response = client.chat.completions.create(
+                model=candidate_model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=4096,
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            err_msg = str(e)
+            last_err = e
+            if "model_decommissioned" in err_msg or "model_not_found" in err_msg or "does not exist" in err_msg:
+                continue
+            raise e
+
+    raise last_err or Exception("All Groq model attempts failed")
 
 
 def heuristic_pharma_fallback(text: str) -> Dict[str, Any]:
