@@ -4,6 +4,7 @@
 !.env.example
 *.pem
 *.key
+start.bat
 
 # Python
 __pycache__/

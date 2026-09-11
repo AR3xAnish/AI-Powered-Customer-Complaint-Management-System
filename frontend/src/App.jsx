@@ -21,19 +21,21 @@ export const App = () => {
   }, [dispatch]);
 
   return (
-    <div className="app-viewport">
+    <div className="flex flex-col h-full w-full overflow-hidden bg-slate-100 text-slate-900 font-sans">
       <Header />
-      <main className="two-pane-container">
-        <section className="pane-wrapper left-pane">
+      <main className="flex-1 flex flex-col lg:flex-row gap-6 p-4 sm:p-6 min-h-0 overflow-hidden">
+        <section className="flex-1 min-h-0 min-w-0 bg-white rounded-xl shadow-xs border border-slate-200 overflow-y-auto">
           <ComplaintForm />
         </section>
-        <section className="pane-wrapper right-pane">
+        <section className="flex-1 min-h-0 min-w-0 bg-white rounded-xl shadow-xs border border-slate-200 overflow-y-auto">
           <AIAssistant />
         </section>
       </main>
       <TriageDrawer />
     </div>
   );
+
 };
 
 export default App;
+

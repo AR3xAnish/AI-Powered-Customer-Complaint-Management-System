@@ -21,6 +21,7 @@ import {
   User,
   CheckCircle2,
   Zap,
+  Loader2,
 } from "lucide-react";
 
 const DEMO_PRESETS = [
@@ -294,47 +295,59 @@ export const AIAssistant = () => {
   };
 
   return (
-    <div className="right-pane-container">
+    <div className="p-6 lg:p-8 flex flex-col gap-6 min-h-full">
       {/* Pane Header */}
-      <div className="pane-header">
-        <div className="pane-title-group">
-          <div className="icon-badge ai-icon-badge">
-            <Bot size={20} />
+      <div className="flex items-center justify-between border-b border-slate-200 pb-5">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center shadow-xs">
+            <Bot size={22} />
           </div>
           <div>
-            <h2 className="pane-heading">AI Complaint Intake Assistant</h2>
-            <div className="pane-sub-bar">
-              <span className="langgraph-pill">LangGraph Agent Graph</span>
-              <span className="groq-model-pill">Groq LPU Engine</span>
-            </div>
+            <h2 className="text-xl font-bold text-slate-900 tracking-tight">AI Complaint Intake Assistant</h2>
           </div>
         </div>
       </div>
 
       {/* Intake Ingestion Section */}
-      <div className="assistant-ingest-card">
+      <div className="bg-slate-50/70 border border-slate-200 rounded-xl p-5 shadow-2xs space-y-4">
         {/* Mode Switcher */}
-        <div className="ingest-toggle-row">
+        <div className="flex bg-slate-200/70 p-1 rounded-lg gap-1">
           <button
             type="button"
-            className={`ingest-toggle-btn ${inputMode === "paste" ? "active" : ""}`}
+            className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs rounded-md transition-all cursor-pointer ${
+              inputMode === "paste"
+                ? "bg-white text-slate-900 font-bold shadow-xs"
+                : "text-slate-600 hover:text-slate-900 font-medium"
+            }`}
             onClick={() => setInputMode("paste")}
           >
-            <FileText size={15} /> Paste Complaint Text / Email
+            <FileText size={15} />
+            <span>Paste Complaint Text / Email</span>
           </button>
           <button
             type="button"
-            className={`ingest-toggle-btn ${inputMode === "upload" ? "active" : ""}`}
+            className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs rounded-md transition-all cursor-pointer ${
+              inputMode === "upload"
+                ? "bg-white text-slate-900 font-bold shadow-xs"
+                : "text-slate-600 hover:text-slate-900 font-medium"
+            }`}
             onClick={() => setInputMode("upload")}
           >
-            <UploadCloud size={15} /> Upload Document (PDF/DOCX/EML)
+            <UploadCloud size={15} />
+            <span>Upload Document (PDF/DOCX/EML)</span>
           </button>
         </div>
 
         {/* Upload Mode */}
         {inputMode === "upload" ? (
           <div
-            className={`dropzone ${isDragOver ? "drag-over" : ""} ${selectedFile ? "has-file" : ""}`}
+            className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2.5 bg-white ${
+              isDragOver
+                ? "border-blue-500 bg-blue-50/50"
+                : selectedFile
+                ? "border-emerald-400 bg-emerald-50/20"
+                : "border-slate-300 hover:border-blue-400"
+            }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -349,48 +362,51 @@ export const AIAssistant = () => {
             />
 
             {selectedFile ? (
-              <div className="selected-file-preview">
-                <FileText size={32} className="file-icon" />
-                <div className="file-meta">
-                  <span className="file-name">{selectedFile.name}</span>
-                  <span className="file-size">
+              <div className="flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                  <FileText size={24} />
+                </div>
+                <div>
+                  <span className="block font-bold text-xs text-slate-900">{selectedFile.name}</span>
+                  <span className="block text-[11px] text-slate-500">
                     {(selectedFile.size / 1024).toFixed(1)} KB • Click to change
                   </span>
                 </div>
               </div>
             ) : (
-              <div className="dropzone-prompt">
-                <UploadCloud size={36} className="dropzone-icon" />
-                <p className="dropzone-text">
+              <>
+                <UploadCloud size={36} className="text-slate-400" />
+                <p className="text-xs text-slate-700 font-medium">
                   Drag & drop complaint document here, or{" "}
-                  <span className="dropzone-browse">browse files</span>
+                  <span className="text-blue-600 font-bold underline">browse files</span>
                 </p>
-                <span className="dropzone-hint">
+                <span className="text-[11px] text-slate-400">
                   Supports PDF, DOCX, TXT, EML (Max 10MB per submission)
                 </span>
-              </div>
+              </>
             )}
           </div>
         ) : (
           /* Paste Mode with Presets */
-          <div className="paste-mode-container">
-            <div className="preset-chips-row">
-              <span className="preset-label">Quick Demo Presets:</span>
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-xs font-bold text-slate-600 mr-1">Quick Demo Presets:</span>
               {DEMO_PRESETS.map((preset, i) => (
                 <button
                   key={i}
                   type="button"
-                  className="preset-chip"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 hover:border-blue-300 rounded-full text-xs font-medium transition-all shadow-2xs cursor-pointer"
                   onClick={() => setPastedText(preset.text)}
                   title={preset.subtitle}
                 >
-                  <Zap size={12} /> {preset.title}
+                  <Zap size={12} className="text-amber-500" />
+                  <span>{preset.title}</span>
                 </button>
               ))}
             </div>
 
             <textarea
-              className="paste-textarea"
+              className="w-full p-3.5 bg-white border border-slate-300 rounded-xl text-xs font-mono text-slate-800 placeholder:text-slate-400 leading-relaxed focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-xs"
               rows={5}
               placeholder="Paste raw customer complaint email, adverse event narration, QA return slip, or transcription..."
               value={pastedText}
@@ -400,20 +416,22 @@ export const AIAssistant = () => {
         )}
 
         {/* Action Trigger Button */}
-        <div className="ingest-action-row">
+        <div>
           <button
             type="button"
-            className="btn btn-primary run-extraction-btn"
+            className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl text-xs transition-all shadow-xs hover:shadow flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             onClick={runExtraction}
             disabled={extractionStatus === "extracting"}
           >
             {extractionStatus === "extracting" ? (
               <>
-                <span className="spinner" /> Extracting with LangGraph...
+                <Loader2 size={16} className="animate-spin" />
+                <span>Extracting with LangGraph...</span>
               </>
             ) : (
               <>
-                <Sparkles size={16} /> Run AI Extraction Pipeline
+                <Sparkles size={16} />
+                <span>Run AI Extraction Pipeline</span>
               </>
             )}
           </button>
@@ -421,16 +439,16 @@ export const AIAssistant = () => {
 
         {/* Multi-stage Progress Bar */}
         {(extractionStatus === "extracting" || extractionStatus === "completed" || extractionStatus === "error") && (
-          <div className="extraction-progress-box">
-            <div className="progress-info-row">
-              <span className="progress-status-text">
-                {extractionStatusText}
-              </span>
-              <span className="progress-pct">{extractionProgress}%</span>
+          <div className="p-3.5 bg-white border border-slate-200 rounded-xl space-y-1.5 shadow-2xs animate-in fade-in">
+            <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
+              <span>{extractionStatusText}</span>
+              <span className="font-mono">{extractionProgress}%</span>
             </div>
-            <div className="progress-track">
+            <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
               <div
-                className={`progress-fill ${extractionStatus === "error" ? "error" : "active"}`}
+                className={`h-full rounded-full transition-all duration-500 ${
+                  extractionStatus === "error" ? "bg-red-500" : "bg-blue-600"
+                }`}
                 style={{ width: `${extractionProgress}%` }}
               />
             </div>
@@ -439,50 +457,66 @@ export const AIAssistant = () => {
       </div>
 
       {/* Follow-up Chat Interface */}
-      <div className="chat-section-wrapper">
-        <div className="chat-header-bar">
-          <div className="chat-title-group">
-            <Bot size={16} className="chat-bot-icon" />
-            <span className="chat-title">Complaint Follow-up & Triage Q&A</span>
+      <div className="border border-slate-200 rounded-xl bg-white flex flex-col shadow-2xs flex-1 min-h-[460px] overflow-hidden">
+        <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2">
+            <Bot size={16} className="text-indigo-600" />
+            <span className="text-xs font-bold text-slate-800">Complaint Follow-up & Triage Q&A</span>
           </div>
-          <span className="chat-context-badge">Context: {fields.product_name || "Active Form"}</span>
+          <span className="font-mono text-[10px] text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 font-semibold">
+            Context: {fields.product_name || "Active Form"}
+          </span>
         </div>
 
         {/* Chat Message Scroll List */}
-        <div className="chat-messages-container">
+        <div className="flex-1 p-4 overflow-y-auto space-y-4 max-h-[380px] bg-slate-50/30">
           {messages.map((msg) => (
-            <div key={msg.id} className={`chat-bubble-row ${msg.role}`}>
-              <div className="chat-avatar">
+            <div
+              key={msg.id}
+              className={`flex items-start gap-2.5 max-w-[90%] ${
+                msg.role === "user" ? "ml-auto flex-row-reverse" : ""
+              }`}
+            >
+              <div
+                className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs shadow-2xs ${
+                  msg.role === "user"
+                    ? "bg-blue-600 text-white"
+                    : "bg-indigo-50 border border-indigo-200 text-indigo-600"
+                }`}
+              >
                 {msg.role === "assistant" ? <Bot size={15} /> : <User size={15} />}
               </div>
-              <div className="chat-bubble-content">
-                <div className="chat-bubble-header">
-                  <span className="chat-author">
-                    {msg.role === "assistant" ? "AI QA Specialist" : "You"}
-                  </span>
-                  <span className="chat-time">{msg.timestamp}</span>
+              <div
+                className={`p-3.5 text-xs leading-relaxed shadow-2xs ${
+                  msg.role === "user"
+                    ? "bg-blue-600 text-white rounded-2xl rounded-tr-xs"
+                    : "bg-white text-slate-800 border border-slate-200 rounded-2xl rounded-tl-xs"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3 mb-1 text-[10px] opacity-75 font-semibold">
+                  <span>{msg.role === "assistant" ? "AI QA Specialist" : "You"}</span>
+                  <span>{msg.timestamp}</span>
                 </div>
-                <div className="chat-text">{msg.content}</div>
+                <div className="whitespace-pre-wrap">{msg.content}</div>
                 {msg.suggestedUpdates && (
-                  <div className="suggested-updates-badge">
-                    <CheckCircle2 size={13} />
+                  <div className="mt-2 pt-2 border-t border-slate-100 flex items-center gap-1 text-[11px] text-emerald-700 font-medium">
+                    <CheckCircle2 size={13} className="text-emerald-600" />
                     <span>Auto-updated form field(s) on left pane</span>
                   </div>
                 )}
               </div>
             </div>
           ))}
+
           {isSending && (
-            <div className="chat-bubble-row assistant">
-              <div className="chat-avatar">
+            <div className="flex items-start gap-2.5 max-w-[90%]">
+              <div className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center shrink-0">
                 <Bot size={15} />
               </div>
-              <div className="chat-bubble-content">
-                <div className="typing-dots">
-                  <span />
-                  <span />
-                  <span />
-                </div>
+              <div className="p-3.5 bg-white border border-slate-200 rounded-2xl rounded-tl-xs shadow-2xs flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" />
+                <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.2s]" />
+                <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.4s]" />
               </div>
             </div>
           )}
@@ -490,31 +524,31 @@ export const AIAssistant = () => {
         </div>
 
         {/* Quick follow-up chip prompts */}
-        <div className="quick-queries-row">
+        <div className="flex flex-wrap gap-1.5 px-4 py-2 border-t border-slate-100 bg-slate-50/50 shrink-0">
           <button
             type="button"
-            className="query-chip"
+            className="text-[11px] font-medium px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-full cursor-pointer transition-colors shadow-2xs"
             onClick={() => handleSendChat("Why is the initial severity classified as Critical?")}
           >
             Why is severity Critical?
           </button>
           <button
             type="button"
-            className="query-chip"
+            className="text-[11px] font-medium px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-full cursor-pointer transition-colors shadow-2xs"
             onClick={() => handleSendChat("What is the recommended CAPA for this defect?")}
           >
             What is the CAPA plan?
           </button>
           <button
             type="button"
-            className="query-chip"
+            className="text-[11px] font-medium px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-full cursor-pointer transition-colors shadow-2xs"
             onClick={() => handleSendChat("Did we have past complaints for this batch?")}
           >
             Check batch history
           </button>
           <button
             type="button"
-            className="query-chip"
+            className="text-[11px] font-medium px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-full cursor-pointer transition-colors shadow-2xs"
             onClick={() => handleSendChat("Are there missing fields in this complaint?")}
           >
             Check missing fields
@@ -527,11 +561,11 @@ export const AIAssistant = () => {
             e.preventDefault();
             handleSendChat();
           }}
-          className="chat-input-form"
+          className="p-3 border-t border-slate-200 flex items-center gap-2 bg-white shrink-0"
         >
           <input
             type="text"
-            className="chat-text-input"
+            className="flex-1 px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
             placeholder="Ask follow-up questions about this complaint, re-extraction, or regulatory actions..."
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
@@ -539,10 +573,10 @@ export const AIAssistant = () => {
           />
           <button
             type="submit"
-            className="chat-send-btn"
+            className="p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors cursor-pointer disabled:opacity-40 shadow-xs flex items-center justify-center"
             disabled={isSending || !chatInput.trim()}
           >
-            <Send size={16} />
+            <Send size={15} />
           </button>
         </form>
       </div>
@@ -551,3 +585,4 @@ export const AIAssistant = () => {
 };
 
 export default AIAssistant;
+
