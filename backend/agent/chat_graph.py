@@ -1,12 +1,10 @@
 import json
-import re
 from typing import TypedDict, Dict, Any, Optional, List
 from langgraph.graph import StateGraph, END
 from agent.groq_service import (
     call_groq_chat,
     extract_json_from_llm_response,
     get_groq_client,
-    PRIMARY_EXTRACTION_MODEL,
     REASONING_MODEL,
 )
 from database import SessionLocal

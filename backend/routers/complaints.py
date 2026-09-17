@@ -2,7 +2,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database import get_db
-from models import Complaint, ComplaintDocument, ExtractionRun, ChatMessage
+from models import Complaint
 from schemas import ComplaintCreate, ComplaintUpdate, ComplaintResponse
 
 router = APIRouter(prefix="/complaints", tags=["Complaints"])

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   startExtraction,
@@ -106,7 +106,7 @@ During receiving audit, warehouse QA noticed a discrepancy between the outer sec
 export const AIAssistant = () => {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
-  const chatBottomRef = useRef(null);
+  const chatScrollContainerRef = useRef(null);
 
   const {
     fields,
@@ -122,6 +122,20 @@ export const AIAssistant = () => {
   const [pastedText, setPastedText] = useState(DEMO_PRESETS[0].text);
   const [isDragOver, setIsDragOver] = useState(false);
   const [chatInput, setChatInput] = useState("");
+
+  const scrollToBottom = () => {
+    if (chatScrollContainerRef.current) {
+      chatScrollContainerRef.current.scrollTo({
+        top: chatScrollContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages.length, isSending]);
+
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -275,8 +289,8 @@ export const AIAssistant = () => {
       }
 
       setTimeout(() => {
-        chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+        scrollToBottom();
+      }, 50);
     } catch (err) {
       dispatch(
         addMessage({
@@ -469,7 +483,7 @@ export const AIAssistant = () => {
         </div>
 
         {/* Chat Message Scroll List */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4 max-h-[380px] bg-slate-50/30">
+        <div ref={chatScrollContainerRef} className="flex-1 p-4 overflow-y-auto space-y-4 max-h-[380px] bg-slate-50/30">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -520,7 +534,6 @@ export const AIAssistant = () => {
               </div>
             </div>
           )}
-          <div ref={chatBottomRef} />
         </div>
 
         {/* Quick follow-up chip prompts */}

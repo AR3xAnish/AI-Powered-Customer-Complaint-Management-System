@@ -1,6 +1,5 @@
-import json
 import re
-from typing import TypedDict, Dict, Any, Optional, List
+from typing import TypedDict, Dict, Any, Optional
 from langgraph.graph import StateGraph, END
 from agent.groq_service import (
     call_groq_chat,

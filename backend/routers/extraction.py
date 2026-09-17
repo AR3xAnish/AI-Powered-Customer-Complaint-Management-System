@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
-from database import get_db, SessionLocal
+from database import get_db
 from models import Complaint, ComplaintDocument, ExtractionRun
 from schemas import ExtractionResponse
 from agent.doc_parser import parse_document

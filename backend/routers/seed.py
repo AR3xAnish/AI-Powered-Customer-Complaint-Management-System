@@ -1,10 +1,9 @@
 import os
-from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from database import get_db
-from models import Complaint, ComplaintDocument, ChatMessage
+from models import Complaint
 from agent.groq_service import get_groq_client, PRIMARY_EXTRACTION_MODEL
 
 router = APIRouter(prefix="", tags=["Seed & Configuration"])
